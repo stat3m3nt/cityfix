@@ -9,27 +9,26 @@ type LatLng = {
     longitude: number;
 }
 
+const DEFAULT_REGION: Region = {
+  latitude: 43.1594,
+  longitude: -79.2469,
+  latitudeDelta: 0.05,
+  longitudeDelta: 0.05,
+};
+
+const getMarkerColor = (severity: string) => {
+  if (severity === "High") return "red";
+  if (severity === "Medium") return "orange";
+  return "green";
+};
+ 
 export default function MapScreen() {
   const { reports } = useReportContext();
   const { getCurrentLocation } = useCurrentLocation();
 
   const mapRef = useRef<MapView | null>(null);
-
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const defaultRegion: Region = {
-    latitude: 43.1594,
-    longitude: -79.2469,
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
-  };
-
-  const getMarkerColor = (severity: string) => {
-    if (severity === "High") return "red";
-    if (severity === "Medium") return "orange";
-    return "green";
-  };
 
   useEffect(() => {
     const LoadLocation = async () => {
@@ -60,7 +59,7 @@ export default function MapScreen() {
         };
     }
     
-    return defaultRegion;
+    return DEFAULT_REGION;
 }, [reports, userLocation]);
     
 useEffect(() => {
@@ -93,22 +92,16 @@ useEffect(() => {
 }, [reports, userLocation]);
 
 if(loading) {
-    return(
-        <View style={styles.center}>
-            <ActivityIndicator size="large"/>
-            <Text style={styles.infoText}> Loading map...</Text>
-        </View>
-    );
-}
-
-   
-
-  
+  return(
+    <View style={styles.center}>
+      <ActivityIndicator size="large"/>
+      <Text style={styles.infoText}> Loading map...</Text>
+    </View>
+  );
+} 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.debugText}>Reports: {reports.length} | User location: {userLocation ? "yes" : "no"}</Text>
-
       <MapView
         ref={mapRef}
         style={styles.map}
@@ -117,16 +110,6 @@ if(loading) {
         showsMyLocationButton={true}
         mapType="standard"
       >
-        {userLocation && (
-        <Marker
-            coordinate={userLocation}
-            title="You are here"
-            description="Device location"
-            pinColor="blue"
-        />
-        )}
-        
-
         {reports.map((report) => (
           <Marker
             key={report.id}
@@ -137,11 +120,25 @@ if(loading) {
             title={report.category}
             description={report.notes || "No notes"}
             pinColor={getMarkerColor(report.severity)}
-          />
+        />
         ))}
       </MapView>
 
-
+    {/* Legend */}
+     <View style={styles.legend}>
+        <View style={styles.legendRow}>
+          <View style={[styles.legendDot, { backgroundColor: "red" }]} />
+          <Text style={styles.legendLabel}>High</Text>
+        </View>
+        <View style={styles.legendRow}>
+          <View style={[styles.legendDot, { backgroundColor: "orange" }]} />
+          <Text style={styles.legendLabel}>Medium</Text>
+        </View>
+        <View style={styles.legendRow}>
+          <View style={[styles.legendDot, { backgroundColor: "green" }]} />
+          <Text style={styles.legendLabel}>Low</Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -160,13 +157,34 @@ const styles = StyleSheet.create({
   },
   infoText: {
     marginTop: 10,
+    color: "#666",
   },
-  debugText: {
+  legend: {
     position: "absolute",
-    top: 60,
-    left: 20,
-    zIndex: 1,
+    bottom: 30,
+    right: 16,
     backgroundColor: "white",
-    padding: 6,
+    borderRadius: 8,
+    padding: 10,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    gap: 6,
+  },
+  legendRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  legendDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  legendLabel: {
+    fontSize: 12,
+    color: "#333",
   },
 });
