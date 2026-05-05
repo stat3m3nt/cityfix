@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text} from "react-native";
+import { View, StyleSheet} from "react-native";
 import { useReportContext } from '../../context/ReportContext';
 import EmptyState from '../../components/common/EmptyState';
 import ReportList from '../../components/reports/ReportList';
@@ -32,20 +32,12 @@ export default function ReportScreen(){
 const styles = StyleSheet.create({
     container: {
     flex: 1,
-    // justifyContent: "center",
     paddingHorizontal: 20,
     backgroundColor: COLORS.background,
   },
   reportContainer: {
-    flexDirection: "row",
-    // justifyContent: "center",
-    // alignItems: "center",
+    flex: 1,
   },
-    // title: {
-    //     fontSize: 20,
-    //     fontWeight: 'bold',
-    //     marginBottom: 10,
-    //     paddingVertical: 10,
-    // },
+
 })
 
