@@ -1,5 +1,5 @@
 
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
 import { useReportContext } from "../../context/ReportContext"; 
 import ReportList from "../../components/reports/ReportList";
 import ScreenHeader from "../../components/common/ScreenHeader";
@@ -23,57 +23,55 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.container}>
       <ScreenHeader title="GeoSnap" subtitle="Track and manage your field reports" />
-      {/* {recentReports.length === 0 ? (
-        <EmptyState title="No reports found" message="Start by creating a new report!" />
-      ) : (
-        <>
-        <Text style={styles.reportsTitle}>Recent Reports</Text>
-        <ReportList reports={recentReports} onStatusChange={(id) =>updateReportStatus(id, "Resolved")} />
-        </>
-      )} */}
-
+      
+      {/* Stats Row */}
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
           <Text style={styles.statNumber}>{totalReports}</Text>
-          <Text style={styles.statLabel}>Total Reports</Text>
+          <Text style={styles.statLabel}>Total</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={styles.statNumber}>{openReports}</Text>
-          <Text style={styles.statLabel}>Open Reports</Text>
+          <Text style={[styles.statNumber, styles.openColor]}>{openReports}</Text>
+          <Text style={styles.statLabel}>Open</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={styles.statNumber}>{resolvedReports}</Text>
-          <Text style={styles.statLabel}>Resolved Reports</Text>
+          <Text style={[styles.statNumber, styles.resolvedColor]}>{resolvedReports}</Text>
+          <Text style={styles.statLabel}>Resolved</Text>
         </View>
+
+        {/* Recent Reports */}
+        <Text style={styles.sectionTitle}>Recent Reports</Text>
+        {recentReports.length === 0 ? (
+          <EmptyState
+           title="No reports yet"
+           message='Tap "Create Report" to submit our first field report.' />
+        ) : (
+          <ReportList reports={recentReports} onStatusChange={handleResolve} />
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: COLORS.background,
-    
-    // justifyContent: "center",
   },
-  // reportsTitle: {
-  //   fontSize: 18,
-  //   fontWeight: "bold",
-  //   marginBottom: 10,
-  //   alignSelf: "flex-start",
-  //   paddingHorizontal: 20,
-  // },
+
+  container: {
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+  },
+  
   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    margin: "auto",
-    width: "100%",
-    paddingHorizontal: 20,
+    marginVertical: 16,
   },
+
   statBox: {
     flex: 1,
     alignItems: "center",
@@ -82,17 +80,34 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 3,
     marginHorizontal: 5,
-    marginVertical: 10,
   },
+
   statNumber: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#1e2a3a",
+    color: COLORS.primary,
   },
+
+  openColor: {
+    color: "#e67e22",
+  },
+
+  resolvedColor: {
+    color: "#27ae60",
+  },
+
   statLabel: {
     fontSize: 12,
-    color: "#1e2a3a",
+    color: "#666",
     marginTop: 4,
     textAlign: "center",
+  },
+
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: COLORS.primary,
+    marginBottom: 10,
+    marginTop: 4,
   },
 });
