@@ -88,7 +88,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.wrapper}>
       <ScreenHeader
-        title="Groundwork"
+        title="CityFix"
         subtitle="Report municipal issues in your community"
       />
       <FlatList

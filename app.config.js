@@ -1,11 +1,11 @@
 export default{
   expo: {
-    name: "geosnap-field-reporter",
-    slug: "geosnap-field-reporter",
+    name: "CityFix",
+    slug: "cityfix",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/geoSnap-icon.png",
-    scheme: "geosnapfieldreporter",
+    scheme: "cityfix",
     userInterfaceStyle: "automatic",
     ios: {
       supportsTablet: true,
@@ -13,7 +13,7 @@ export default{
 
     },
     android: {
-      package: "com.stat3m3nt.geosnapfieldreporter",
+      package: "com.stat3m3nt.cityfix",
       newArchEnabled: false, // Set to true if you want to enable the new architecture
 
       adaptiveIcon: {
