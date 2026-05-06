@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
     },
     takePhotoButtonText: {
-        color: COLORS.white,
+        color: COLORS.primaryLight,
         fontSize: 14,
         fontWeight: "bold",
     },

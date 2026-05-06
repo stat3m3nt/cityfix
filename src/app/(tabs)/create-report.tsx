@@ -56,72 +56,80 @@ export default function CreateReportScreen() {
     }
 
     return (
-        <ScrollView 
-            style={styles.scrollView} 
-            contentContainerStyle={styles.container} 
-            keyboardShouldPersistTaps="handled" 
-            showsVerticalScrollIndicator={true}
-        >
+        <View style={styles.wrapper}>
             <ScreenHeader title="Create New Report" subtitle="Capture and describe your report"/>
 
-            <View style={styles.formGroup}>
-                <Text style={styles.label}>Photo</Text>
-                <ReportPhotoInput 
-                photoURI={photoURI} 
-                onTakePhoto={openCamera} 
-                onRetakePhoto={retakePhoto}
-                />
-            </View>
+            <ScrollView 
+                style={styles.scrollView} 
+                contentContainerStyle={styles.container} 
+                keyboardShouldPersistTaps="handled" 
+                showsVerticalScrollIndicator={true}
+            >
 
-            <View style={styles.formGroup}>
-                <Text style={styles.label}>Category</Text>
-                <View style={styles.pickerContainer}>
-                    <Picker<string>
-                        selectedValue={category}
-                        onValueChange={(itemValue) => setCategory(itemValue)}
-                        style={styles.picker}
-                        itemStyle={{ color: '#000000' }}
-                    >
-                        <Picker.Item label="Select a category" value="" />
-                        {REPORT_CATEGORIES.map((option) => {
-                            const Item = Picker.Item as any;
-                            return <Item key={option} label={option} value={option} />;
-                        })}
-                    </Picker>
+                <View style={styles.formGroup}>
+                    <Text style={styles.label}>Photo</Text>
+                    <ReportPhotoInput 
+                    photoURI={photoURI} 
+                    onTakePhoto={openCamera} 
+                    onRetakePhoto={retakePhoto}
+                    />
                 </View>
-            </View>
 
-            <View style={styles.formGroup}>
-                <Text style={styles.label}>Severity</Text>
-                <Text style={styles.subtitle}>(Indicate the severity level of the issue.)</Text>
-                <SeveritySelector severity={severity} onChange={setSeverity} />
-            </View>
+                <View style={styles.formGroup}>
+                    <Text style={styles.label}>Category</Text>
+                    <View style={styles.pickerContainer}>
+                        <Picker<string>
+                            selectedValue={category}
+                            onValueChange={(itemValue) => setCategory(itemValue)}
+                            style={styles.picker}
+                            itemStyle={{ color: '#000000' }}
+                        >
+                            <Picker.Item label="Select a category" value="" />
+                            {REPORT_CATEGORIES.map((option) => {
+                                const Item = Picker.Item as any;
+                                return <Item key={option} label={option} value={option} />;
+                            })}
+                        </Picker>
+                    </View>
+                </View>
 
-            <View style={styles.formGroup}>
-                <Text style={styles.label}>Notes</Text>
-                <TextInput
-                    style={styles.textInput}
-                    value={notes}
-                    onChangeText={setNotes}
-                    placeholder="Add any additional details about the report..."
-                    multiline
-                />
-            </View>
+                <View style={styles.formGroup}>
+                    <Text style={styles.label}>Severity</Text>
+                    <Text style={styles.subtitle}>(Indicate the severity level of the issue.)</Text>
+                    <SeveritySelector severity={severity} onChange={setSeverity} />
+                </View>
 
-            <Pressable style={styles.saveButton} onPress={saveReport}>
-                <Text style={styles.saveButtonText}>Save Report</Text>
-            </Pressable>
-        </ScrollView>
+                <View style={styles.formGroup}>
+                    <Text style={styles.label}>Notes</Text>
+                    <TextInput
+                        style={styles.textInput}
+                        value={notes}
+                        onChangeText={setNotes}
+                        placeholder="Add any additional details about the report..."
+                        multiline
+                    />
+                </View>
+
+                <Pressable style={styles.saveButton} onPress={saveReport}>
+                    <Text style={styles.saveButtonText}>Save Report</Text>
+                </Pressable>
+            </ScrollView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
+    wrapper: {
         flex: 1,
         backgroundColor: COLORS.background,
+  },
+    scrollView: {
+        flex: 1,
     },
     container: {
-        padding: 24,
+        paddingHorizontal: 20,
+        paddingBottom: 30,
+        paddingTop: 24,
     },
     formGroup: {
         marginVertical: 10,

@@ -7,7 +7,7 @@
  *   npx expo install @react-native-async-storage/async-storage
  */
 
-import {
+import React,{
   createContext,
   useContext,
   useState,
@@ -89,7 +89,7 @@ const ReportContext = createContext<ReportContextType | undefined>(undefined);
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
-export function ReportProvider({ children }: { children: ReactNode }) {
+export function ReportProvider({ children }: { children: React.ReactNode }) {
   const [reports, setReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
