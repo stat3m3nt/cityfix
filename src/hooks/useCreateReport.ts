@@ -9,7 +9,7 @@
  */
 
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { useReportContext } from '../context/ReportContext';
 import { useCurrentLocation } from './useCurrentLocation';
@@ -26,6 +26,10 @@ export function useCreateReport() {
     const [cameraReady, setCameraReady] = useState(false);
 
     const cameraRef = useRef<CameraView | null>(null);
+    const setCameraRef = useCallback((instance: CameraView | null) => {
+    cameraRef.current = instance;
+}, []);
+
     const [cameraPermission, requestCameraPermission] = useCameraPermissions();
 
     const { addReport } = useReportContext();
@@ -120,6 +124,7 @@ export function useCreateReport() {
         cameraReady,
         setCameraReady,
         cameraRef,
+        setCameraRef,
         openCamera,
         takePhoto,
         retakePhoto,

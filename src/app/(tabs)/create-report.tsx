@@ -22,17 +22,20 @@ export default function CreateReportScreen() {
         cameraReady,
         setCameraReady,
         cameraRef,
+        setCameraRef,
         openCamera,
         takePhoto,
         retakePhoto,
         saveReport,
     } = useCreateReport();
 
+    const Camera = CameraView as any; // Type assertion to bypass ref typing issues with expo-camera
+
     if(showCamera) {
         return (
             <View style={styles.cameraContainer}>
-                <CameraView
-                    ref={cameraRef}
+                <Camera
+                    ref={setCameraRef}
                     style={styles.camera}
                     facing="back"
                     onCameraReady={() => setCameraReady(true)}
@@ -73,16 +76,17 @@ export default function CreateReportScreen() {
             <View style={styles.formGroup}>
                 <Text style={styles.label}>Category</Text>
                 <View style={styles.pickerContainer}>
-                    <Picker
+                    <Picker<string>
                         selectedValue={category}
                         onValueChange={(itemValue) => setCategory(itemValue)}
                         style={styles.picker}
                         itemStyle={{ color: '#000000' }}
                     >
                         <Picker.Item label="Select a category" value="" />
-                        {REPORT_CATEGORIES.map((option) => (
-                            <Picker.Item key={option} label={option} value={option} />
-                        ))}
+                        {REPORT_CATEGORIES.map((option) => {
+                            const Item = Picker.Item as any;
+                            return <Item key={option} label={option} value={option} />;
+                        })}
                     </Picker>
                 </View>
             </View>
@@ -210,4 +214,3 @@ const styles = StyleSheet.create({
     },
 
 });
-
