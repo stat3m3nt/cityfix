@@ -23,9 +23,14 @@ export default function HomeScreen() {
   };
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.container}>
+    <View style={styles.wrapper}>
       <ScreenHeader title="GeoSnap" subtitle="Track and manage your field reports" />
       
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}>
+
       {/* Stats Row */}
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
@@ -40,9 +45,11 @@ export default function HomeScreen() {
           <Text style={[styles.statNumber, styles.resolvedColor]}>{resolvedReports}</Text>
           <Text style={styles.statLabel}>Resolved</Text>
         </View>
+      </View>
 
         {/* Recent Reports */}
         <Text style={styles.sectionTitle}>Recent Reports</Text>
+        
         {recentReports.length === 0 ? (
           <EmptyState
            title="No reports yet"
@@ -50,15 +57,18 @@ export default function HomeScreen() {
         ) : (
           <ReportList reports={recentReports} onStatusChange={handleResolve} />
         )}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
+  wrapper: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  scrollView: {
+    flex: 1,
   },
 
   container: {

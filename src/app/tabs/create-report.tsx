@@ -53,12 +53,21 @@ export default function CreateReportScreen() {
     }
 
     return (
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={true}>
+        <ScrollView 
+            style={styles.scrollView} 
+            contentContainerStyle={styles.container} 
+            keyboardShouldPersistTaps="handled" 
+            showsVerticalScrollIndicator={true}
+        >
             <ScreenHeader title="Create New Report" subtitle="Capture and describe your report"/>
 
             <View style={styles.formGroup}>
                 <Text style={styles.label}>Photo</Text>
-                <ReportPhotoInput photoURI={photoURI} onTakePhoto={openCamera} onRetakePhoto={retakePhoto}/>
+                <ReportPhotoInput 
+                photoURI={photoURI} 
+                onTakePhoto={openCamera} 
+                onRetakePhoto={retakePhoto}
+                />
             </View>
 
             <View style={styles.formGroup}>
@@ -132,14 +141,13 @@ const styles = StyleSheet.create({
         textAlignVertical: "top",
     },
     saveButton: {
-        flex: 1,
         backgroundColor: COLORS.primary,
         paddingVertical: 15,
         paddingHorizontal: 20,
         borderRadius: 5,
         marginTop: 20,
         width: "50%",
-        marginHorizontal: "auto",
+        alignSelf: "center",
     },
     saveButtonText: {
         color: COLORS.white,

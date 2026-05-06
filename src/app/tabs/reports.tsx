@@ -4,12 +4,13 @@ import EmptyState from '../../components/common/EmptyState';
 import ReportList from '../../components/reports/ReportList';
 import ScreenHeader from "../../components/common/ScreenHeader";
 import { COLORS } from "../../constants/colors";
+import { Report } from "../../context/ReportContext";
 
 export default function ReportScreen(){
     const { reports, updateReportStatus } = useReportContext();
 
-    const handleResolve = (id: string) => {
-        updateReportStatus(id, 'Resolved');
+    const handleResolve = (id: string, newStatus: Report["status"]) => {
+        updateReportStatus(id, newStatus);
     };
 
     return (
