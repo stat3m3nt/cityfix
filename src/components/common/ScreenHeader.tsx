@@ -17,21 +17,24 @@ export default function ScreenHeader({ title, subtitle }: ScreenHeaderProps) {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        paddingHorizontal: 20,
+        paddingTop: 56,
+        paddingBottom: 20,
         backgroundColor: COLORS.primary,
-        borderRadius: 10,
-        marginTop: 40,
+
     },
     title: {
         fontSize: 24,
-        fontWeight: "bold",
+        fontWeight: "700",
         color: COLORS.white,
-        // marginBottom: 10,
+        letterSpacing: -0.5,
         textAlign: 'center',
     },
     subtitle: {
         fontSize: 12,
-        color: COLORS.white,
+        color: COLORS.primaryFaint,
         textAlign: 'center',
+        marginTop: 4,
+        opacity: 0.85,
     },
 });

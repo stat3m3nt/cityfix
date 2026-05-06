@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     },
     message: {
         fontSize: 16,
-        color: COLORS.secondary,
+        color: COLORS.textSecondary,
         textAlign: "center",
     },
 });

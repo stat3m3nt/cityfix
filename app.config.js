@@ -8,10 +8,14 @@ export default{
     scheme: "geosnapfieldreporter",
     userInterfaceStyle: "automatic",
     ios: {
-      supportsTablet: true
+      supportsTablet: true,
+      newArchEnabled: false, // Set to true if you want to enable the new architecture
+
     },
     android: {
       package: "com.stat3m3nt.geosnapfieldreporter",
+      newArchEnabled: false, // Set to true if you want to enable the new architecture
+
       adaptiveIcon: {
         backgroundColor: "#3C3489",
         foregroundImage: "./assets/images/android/mipmap-xxxhdpi/ic_launcher.png",
@@ -48,7 +52,7 @@ export default{
     ],
     experiments: {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": false,
     }
   }
 }

@@ -77,7 +77,7 @@ export default function CreateReportScreen() {
                         selectedValue={category}
                         onValueChange={(itemValue) => setCategory(itemValue)}
                         style={styles.picker}
-                        itemStle={{ color: '#000000' }}
+                        itemStyle={{ color: '#000000' }}
                     >
                         <Picker.Item label="Select a category" value="" />
                         {REPORT_CATEGORIES.map((option) => (
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     },
     subtitle:{
         fontSize: 14,
-        color: COLORS.white,
+        color: COLORS.textSecondary,
         marginBottom: 10,
     },
     label: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     cancelButton: {
-        backgroundColor: COLORS.secondary,
+        backgroundColor: COLORS.background,
         paddingVertical: 15,
         paddingHorizontal: 20,
         borderRadius: 5,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     cancelButtonText: {
-        color: COLORS.white,
+        color: COLORS.textSecondary,
         fontSize: 16,
         fontWeight: "bold",
     },

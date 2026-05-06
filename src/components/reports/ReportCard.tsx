@@ -7,101 +7,158 @@ type ReportCardProps = {
     onStatusChange: (id: string, newStatus: Report["status"]) => void;
 };
 
+const severityColor = (severity: string) => {
+  if (severity === "High") return COLORS.highSeverity;
+  if (severity === "Medium") return COLORS.mediumSeverity;
+  return COLORS.lowSeverity;
+};
+ 
+const severityBg = (severity: string) => {
+  if (severity === "High") return "#FDEAEA";
+  if (severity === "Medium") return "#FFF3E8";
+  return "#E8F7F2";
+};
+
 export default function ReportCard({ report, onStatusChange }: ReportCardProps) {
     return (
-        <View style={styles.reportCard}>
+        <View style={styles.card}>
             {report.photoURI ? (
-                <Image source={{ uri: report.photoURI }} style={styles.reportImage} />) : (
-                <View style={styles.placeholderImage}>
-                    <Text style={styles.placeholderText}>No Image</Text>
+                <Image source={{ uri: report.photoURI }} style={styles.image} />) : (
+                <View style={styles.imagePlaceholder}>
+                    <Text style={styles.imagePlaceholderText}>No Image</Text>
                 </View>
             )}
-            <Text style={styles.reportTitle}>{report.title}</Text>
-            <Text style={styles.reportCategory}>Category: {report.category}</Text>
-            <Text style={styles.reportSeverity}>Severity: {report.severity}</Text>
-            <Text style={styles.reportStatus}>Status: {report.status}</Text>
-            <Text style={styles.reportText}>Notes:{report.notes}</Text>
 
-            {report.status === "Open" && (
-                <Pressable
-                    style={styles.resolveButton}
-                    onPress={() => onStatusChange(report.id, "Resolved")}>
-                    <Text style={styles.resolveButtonText}>Mark as Resolved</Text>
-                </Pressable>
-            )}
+            <View style={styles.body}>
+                <View style={styles.row}>
+                    <Text style={styles.category}>{report.category}</Text>
+                    <View style={[styles.severityBadge, { backgroundColor: severityBg(report.severity) }]}>
+                    
+                        <Text style={[styles.severityText, { color: severityColor(report.severity) }]}>
+                        {report.severity}
+                        </Text>
+                    </View>
+                </View>
+ 
+                {report.notes ? (
+                    <Text style={styles.notes} numberOfLines={2}>{report.notes}</Text>
+                ) : null}
+        
+                <View style={styles.footer}>
+                    <View style={[
+                        styles.statusBadge,
+                        { backgroundColor: report.status === "Open" ? "#FFF3E8" : "#E8F7F2" }
+                    ]}>
+                        <Text style={[
+                            styles.statusText,
+                            { color: report.status === "Open" ? COLORS.open : COLORS.resolved }
+                    ]}>
+                
+                        {report.status}
+                    </Text>
+                </View>
+ 
+                {report.status === "Open" && (
+                    <Pressable
+                        style={styles.resolveButton}
+                        onPress={() => onStatusChange(report.id, "Resolved")}>
+                        <Text style={styles.resolveButtonText}>Mark as Resolved</Text>
+                    </Pressable>
+                )}
+            </View>
         </View>
+    </View>
     );
 }
 
 const styles = StyleSheet.create({
-    reportCard: {
-        width: "100%",
-        backgroundColor: "#fff",
-        borderRadius: 10,
-        padding: 10,
-        marginVertical: 5,
-        shadowColor: COLORS.black,
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    reportImage: {
-        width: "100%",
-        height: 200,
-        borderRadius: 10,
-    },
-    placeholderImage: {
-        width: "100%",
-        height: 200,
-        borderRadius: 10,
-        backgroundColor: COLORS.white,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    placeholderText: {
-        color: COLORS.primary,
-        fontSize: 16,
-    },
-    reportTitle: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 5,
-    },
-    reportDescription: {
-        fontSize: 14,
-        marginBottom: 5,
-    },
-    reportCategory: {
-        fontSize: 12,
-        color: COLORS.secondary,
-    },
-    reportSeverity: {
-        fontSize: 12,
-        color: COLORS.secondary,
-    },
-    reportStatus: {
-        fontSize: 12,
-        color: COLORS.secondary,
-    },
-    reportText: {
-        fontSize: 14,
-        marginTop: 5,
-    },
-    resolveButton: {
-        color: COLORS.white,
-        backgroundColor: COLORS.primary,
-        paddingVertical: 10,
-        borderRadius: 5,
-        alignItems: "center",
-        marginTop: 10,
-    },
-    resolveButtonText: {
-        color: COLORS.white,
-        fontSize: 14,
-        fontWeight: "bold",
-    },
+    card: {
+    backgroundColor: COLORS.card,
+    borderRadius: 14,
+    marginBottom: 12,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+    overflow: "hidden",
+  },
+  image: {
+    width: "100%",
+    height: 180,
+  },
+  imagePlaceholder: {
+    width: "100%",
+    height: 100,
+    backgroundColor: COLORS.primaryFaint,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imagePlaceholderText: {
+    color: COLORS.primaryLight,
+    fontSize: 13,
+    fontWeight: "500",
+  },
+  body: {
+    padding: 14,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  category: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: COLORS.textPrimary,
+    flex: 1,
+  },
+  severityBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 20,
+    marginLeft: 8,
+  },
+  severityText: {
+    fontSize: 11,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  notes: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    marginBottom: 10,
+    lineHeight: 18,
+  },
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 4,
+  },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 20,
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  resolveButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  resolveButtonText: {
+    color: COLORS.white,
+    fontSize: 12,
+    fontWeight: "600",
+  },
 });
+ 
