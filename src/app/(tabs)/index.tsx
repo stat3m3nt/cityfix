@@ -14,15 +14,15 @@ type StatBoxProps = {
   color: string;
   bg: string;
   icon: keyof typeof Ionicons.glyphMap;
-  route: string;
+  filter: string;
 };
 
-function StatBox({ label, value, color, bg, icon, route }: StatBoxProps) {
+function StatBox({ label, value, color, bg, icon, filter }: StatBoxProps) {
   const router = useRouter();
   return (
     <Pressable
       style={[styles.statBox, { backgroundColor: bg }]}
-      onPress={() => router.push(route as any)}
+      onPress={() => router.push({ pathname: "/(tabs)/reports", params: { filter } } as any)}
     >
       <View style={[styles.statIconWrap, { backgroundColor: color + "22" }]}>
         <Ionicons name={icon} size={16} color={color} />
@@ -53,7 +53,7 @@ export default function HomeScreen() {
           color={COLORS.primary}
           bg={COLORS.primaryFaint}
           icon="layers-outline"
-          route="/(tabs)/reports"
+          filter="All"
         />
         <StatBox
           label="Open"
@@ -61,7 +61,7 @@ export default function HomeScreen() {
           color={COLORS.open}
           bg="#FFF3E8"
           icon="time-outline"
-          route="/(tabs)/reports"
+          filter="Open"
         />
         <StatBox
           label="Resolved"
@@ -69,7 +69,7 @@ export default function HomeScreen() {
           color={COLORS.resolved}
           bg="#E8F5EE"
           icon="checkmark-done-outline"
-          route="/(tabs)/reports"
+          filter="Resolved"
         />
       </View>
 
@@ -77,7 +77,7 @@ export default function HomeScreen() {
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionLabel}>Recent Reports</Text>
         {reports.length > 3 && (
-          <Pressable onPress={() => router.push("/(tabs)/reports" as any)}>
+          <Pressable onPress={() => router.push({ pathname: "/(tabs)/reports", params: { filter: "All" } } as any)}>
             <Text style={styles.seeAll}>See all</Text>
           </Pressable>
         )}

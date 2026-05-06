@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocalSearchParams } from "expo-router";
 import { useReportContext } from '../../context/ReportContext';
 import EmptyState from '../../components/common/EmptyState';
 import ReportList from '../../components/reports/ReportList';
@@ -8,12 +9,18 @@ import { COLORS } from "../../constants/colors";
 import { Report } from "../../context/ReportContext";
 
 type Filter = "All" | "Open" | "Resolved";
-
 const FILTERS: Filter[] = ["All", "Open", "Resolved"];
 
 export default function ReportScreen(){
     const { reports, updateReportStatus } = useReportContext();
+    const params = useLocalSearchParams<{ filter?: string }>();
     const [activeFilter, setActiveFilter] = useState<Filter>("All");
+
+    useEffect(() => {
+        if (params.filter && FILTERS.includes(params.filter as Filter)) {
+            setActiveFilter(params.filter as Filter);
+        }
+    }, [params.filter]);
 
     const handleResolve = (id: string, newStatus: Report["status"]) => {
         updateReportStatus(id, newStatus);
