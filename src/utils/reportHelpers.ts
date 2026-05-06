@@ -5,15 +5,19 @@ import { Report } from '../context/ReportContext';
  * Builds a human-readable title from category and severity.
  */
 export function createReportTitle(category: string, severity: string): string {
-    return `${category} - ${severity} Priority`;
+  return `${category} — ${severity} Priority`;
 }
 
 /**
  * Validates required fields before saving a report.
  * Returns an error string if invalid, empty string if valid.
  */
-export function validateReportInput(category: string, severity: string, notes: string): string {
-    if (!category) return 'Please select an issue type.';
+export function validateReportInput(
+  category: string,
+  severity: string,
+  notes: string
+): string {
+  if (!category) return 'Please select an issue type.';
   if (!severity) return 'Please select an urgency level.';
   if (!notes.trim()) return 'Please add a description of the issue.';
   return '';
@@ -24,7 +28,6 @@ export function validateReportInput(category: string, severity: string, notes: s
  * Returns a formatted address like "123 Main St, Milton, ON"
  * Falls back gracefully if geocoding fails.
  */
-
 export async function reverseGeocode(
   latitude: number,
   longitude: number
@@ -47,35 +50,35 @@ export async function reverseGeocode(
   // Fallback to raw coordinates
   return `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
 }
- 
+
 /**
  * Assembles a new Report object from raw input data.
  * Address is passed in after async reverse geocoding.
  */
-export function createNewReport( data : {
-    category: string;
-    severity: string;
-    notes: string;
-    photoURI: string | null;
-    latitude: number;
-    longitude: number;
+export function createNewReport(data: {
+  category: string;
+  severity: string;
+  notes: string;
+  photoURI: string | null;
+  latitude: number;
+  longitude: number;
+  address: string;
 }): Report {
-    return {
-        id: generateId(),
-        title: createReportTitle(data.category, data.severity),
-        category: data.category,
-        severity: data.severity,
-        notes: data.notes,
-        photoURI: data.photoURI,
-        latitude: data.latitude,
-        longitude: data.longitude,
-        address: data.address,
-        status: 'Open',
-        createdAt: new Date(),
-    };
+  return {
+    id: generateId(),
+    title: createReportTitle(data.category, data.severity),
+    category: data.category,
+    severity: data.severity,
+    notes: data.notes,
+    photoURI: data.photoURI,
+    latitude: data.latitude,
+    longitude: data.longitude,
+    address: data.address,
+    status: 'Open',
+    createdAt: new Date(),
+  };
 }
 
- 
 /**
  * Generates a collision-safe unique ID.
  * Uses crypto.randomUUID() when available (React Native 0.73+),
@@ -87,4 +90,3 @@ export function generateId(): string {
   }
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
- 

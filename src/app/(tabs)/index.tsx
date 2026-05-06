@@ -1,11 +1,12 @@
-import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
+import { Text, View, StyleSheet, Pressable, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useReportContext } from "../../context/ReportContext";
-import ReportList from "../../components/reports/ReportList";
+import ReportCard from "../../components/reports/ReportCard";
 import ScreenHeader from "../../components/common/ScreenHeader";
 import EmptyState from "../../components/common/EmptyState";
 import { COLORS } from "../../constants/colors";
 import { useRouter } from "expo-router";
+import { Report } from "../../context/ReportContext";
 
 type StatBoxProps = {
   label: string;
@@ -34,75 +35,81 @@ function StatBox({ label, value, color, bg, icon, route }: StatBoxProps) {
 
 export default function HomeScreen() {
   const { reports, updateReportStatus } = useReportContext();
+  const router = useRouter();
 
   const totalReports = reports.length;
   const openReports = reports.filter((r) => r.status === "Open").length;
   const resolvedReports = reports.filter((r) => r.status === "Resolved").length;
   const recentReports = reports.slice(0, 3);
 
+  const ListHeader = (
+    <View>
+      {/* Stats row */}
+      <Text style={styles.sectionLabel}>Overview</Text>
+      <View style={styles.statsRow}>
+        <StatBox
+          label="Total"
+          value={totalReports}
+          color={COLORS.primary}
+          bg={COLORS.primaryFaint}
+          icon="layers-outline"
+          route="/(tabs)/reports"
+        />
+        <StatBox
+          label="Open"
+          value={openReports}
+          color={COLORS.open}
+          bg="#FFF3E8"
+          icon="time-outline"
+          route="/(tabs)/reports"
+        />
+        <StatBox
+          label="Resolved"
+          value={resolvedReports}
+          color={COLORS.resolved}
+          bg="#E8F5EE"
+          icon="checkmark-done-outline"
+          route="/(tabs)/reports"
+        />
+      </View>
+
+      {/* Recent reports header */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionLabel}>Recent Reports</Text>
+        {reports.length > 3 && (
+          <Pressable onPress={() => router.push("/(tabs)/reports" as any)}>
+            <Text style={styles.seeAll}>See all</Text>
+          </Pressable>
+        )}
+      </View>
+    </View>
+  );
+
   return (
     <View style={styles.wrapper}>
       <ScreenHeader
-        title="CivicSnap"
+        title="Groundwork"
         subtitle="Report municipal issues in your community"
       />
-
-      <ScrollView
-        style={styles.scrollView}
+      <FlatList
+        data={recentReports}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
-      >
-        {/* Overview section */}
-        <Text style={styles.sectionLabel}>Overview</Text>
-        <View style={styles.statsRow}>
-          <StatBox
-            label="Total"
-            value={totalReports}
-            color={COLORS.primary}
-            bg={COLORS.primaryFaint}
-            icon="layers-outline"
-            route="/(tabs)/reports"
-          />
-          <StatBox
-            label="Open"
-            value={openReports}
-            color={COLORS.open}
-            bg="#FFF3E8"
-            icon="time-outline"
-            route="/(tabs)/reports"
-          />
-          <StatBox
-            label="Resolved"
-            value={resolvedReports}
-            color={COLORS.resolved}
-            bg="#E8F5EE"
-            icon="checkmark-done-outline"
-            route="/(tabs)/reports"
-          />
-        </View>
-
-        {/* Recent reports section */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionLabel}>Recent Reports</Text>
-          {reports.length > 3 && (
-            <Pressable onPress={() => {}}>
-              <Text style={styles.seeAll}>See all</Text>
-            </Pressable>
-          )}
-        </View>
-
-        {recentReports.length === 0 ? (
+        ListHeaderComponent={ListHeader}
+        ListEmptyComponent={
           <EmptyState
             title="No reports yet"
             message="Tap 'Create Report' to submit your first community issue."
           />
-        ) : (
-          <ReportList
-            reports={recentReports}
+        }
+        renderItem={({ item }: { item: Report }) => (
+          <ReportCard
+            report={item}
             onStatusChange={(id) => updateReportStatus(id, "Resolved")}
           />
         )}
-      </ScrollView>
+      />
     </View>
   );
 }
@@ -111,9 +118,6 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: COLORS.background,
-  },
-  scrollView: {
-    flex: 1,
   },
   container: {
     paddingHorizontal: 16,
@@ -174,5 +178,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.primaryMid,
     fontWeight: "600",
+    marginBottom: 12,
   },
 });
