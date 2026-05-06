@@ -1,7 +1,7 @@
 import ScreenHeader from "../../components/common/ScreenHeader";
 import ReportPhotoInput from "../../components/reports/ReportPhotoInput";
 import SeveritySelector from "../../components/reports/SeveritySelector";
-import { REPORT_CATEGORIES} from "../../constants/reportOptions";
+import { REPORT_CATEGORIES, CATEGORY_DESCRIPTIONS} from "../../constants/reportOptions";
 import { COLORS } from "../../constants/colors";
 import { useCreateReport } from "../../hooks/useCreateReport";
 import { View, Text, StyleSheet, TextInput, Pressable, ScrollView } from "react-native";
@@ -57,17 +57,20 @@ export default function CreateReportScreen() {
 
     return (
         <View style={styles.wrapper}>
-            <ScreenHeader title="Create New Report" subtitle="Capture and describe your report"/>
+            <ScreenHeader title="Report an Issue" subtitle="Help improve our community's infrastructure"/>
 
             <ScrollView 
                 style={styles.scrollView} 
                 contentContainerStyle={styles.container} 
                 keyboardShouldPersistTaps="handled" 
-                showsVerticalScrollIndicator={true}
+                showsVerticalScrollIndicator={false}
             >
 
+                {/* Photo Input */}
                 <View style={styles.formGroup}>
                     <Text style={styles.label}>Photo</Text>
+                    <Text style={styles.subtitle}>A photo helps city workers understand the issue better.</Text>
+                    
                     <ReportPhotoInput 
                     photoURI={photoURI} 
                     onTakePhoto={openCamera} 
@@ -75,16 +78,21 @@ export default function CreateReportScreen() {
                     />
                 </View>
 
+                {/* Category Picker */}
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Category</Text>
+                    <Text style={styles.label}>Issue Type</Text>
+                    {category ? (
+                        <Text style={styles.hint}>{CATEGORY_DESCRIPTIONS[category]}</Text>
+                    ) : (
+                        <Text style={styles.hint}>Select the type of infrastructure issue.</Text>
+                    )}
                     <View style={styles.pickerContainer}>
                         <Picker<string>
                             selectedValue={category}
                             onValueChange={(itemValue) => setCategory(itemValue)}
                             style={styles.picker}
-                            itemStyle={{ color: '#000000' }}
                         >
-                            <Picker.Item label="Select a category" value="" />
+                            <Picker.Item label="Select issue type..." value="" />
                             {REPORT_CATEGORIES.map((option) => {
                                 const Item = Picker.Item as any;
                                 return <Item key={option} label={option} value={option} />;
@@ -93,19 +101,23 @@ export default function CreateReportScreen() {
                     </View>
                 </View>
 
+                {/* Severity */}
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Severity</Text>
-                    <Text style={styles.subtitle}>(Indicate the severity level of the issue.)</Text>
+                    <Text style={styles.label}>Urgency</Text>
+                    <Text style={styles.hint}>How urgently does this need to be addressed?</Text>
                     <SeveritySelector severity={severity} onChange={setSeverity} />
                 </View>
 
+                 {/* Notes */}
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Notes</Text>
+                    <Text style={styles.label}>Description</Text>
+                    <Text style={styles.hint}>Add any details that will help city workers locate and fix the issue.</Text>
                     <TextInput
                         style={styles.textInput}
                         value={notes}
                         onChangeText={setNotes}
-                        placeholder="Add any additional details about the report..."
+                        placeholder="e.g. Large pothole near the bus stop, approximately 30cm wide..."
+                        placeholderTextColor={COLORS.textMuted}
                         multiline
                     />
                 </View>
@@ -113,6 +125,10 @@ export default function CreateReportScreen() {
                 <Pressable style={styles.saveButton} onPress={saveReport}>
                     <Text style={styles.saveButtonText}>Save Report</Text>
                 </Pressable>
+
+                 <Text style={styles.disclaimer}>
+                    Reports are geotagged with your current location and timestamp.
+                </Text>
             </ScrollView>
         </View>
     );
@@ -128,11 +144,11 @@ const styles = StyleSheet.create({
     },
     container: {
         paddingHorizontal: 20,
-        paddingBottom: 30,
+        paddingBottom: 40,
         paddingTop: 24,
     },
     formGroup: {
-        marginVertical: 10,
+        marginBottom: 20,
     },
     subtitle:{
         fontSize: 14,
@@ -140,33 +156,48 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     label: {
-        fontSize: 16,
-        fontWeight: "bold",
-        marginBottom: 5,
-        color: COLORS.primary,
+        fontSize: 14,
+        fontWeight: "700",
+        marginBottom: 4,
+        color: COLORS.textPrimary,
+        textTransform: "uppercase",
+        letterSpacing: 0.5,
+    },
+    hint: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    marginBottom: 10,
+    lineHeight: 18,
     },
     textInput: {   
-        borderWidth: 1,
-        borderColor: COLORS.primary,
-        borderRadius: 5,
-        padding: 10,
-        backgroundColor: COLORS.white,
+        borderWidth: 1.5,
+        borderColor: COLORS.border,
+        borderRadius: 10,
+        padding: 12,
+        backgroundColor: COLORS.card,
         textAlignVertical: "top",
+        fontSize: 14,
+        color: COLORS.textPrimary,
     },
+
     saveButton: {
         backgroundColor: COLORS.primary,
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginTop: 20,
-        width: "50%",
-        alignSelf: "center",
+        paddingVertical: 16,
+        borderRadius: 12,
+        marginTop: 8,
+        alignItems: "center",
     },
     saveButtonText: {
         color: COLORS.white,
         fontSize: 16,
-        fontWeight: "bold",
-        textAlign: "center"
+        fontWeight: "700",
+        letterSpacing: 0.3,
+    },
+    disclaimer: {
+        fontSize: 11,
+        color: COLORS.textMuted,
+        textAlign: "center",
+        marginTop: 12,
     },
     cameraContainer: {
         flex: 1,
@@ -177,7 +208,7 @@ const styles = StyleSheet.create({
     },
     cameraControls: {
         position: "absolute",
-        bottom: 20,
+        bottom: 30,
         left: 0,
         right: 0,
         flexDirection: "row",
@@ -186,39 +217,40 @@ const styles = StyleSheet.create({
     },
     captureButton: {
         backgroundColor: COLORS.primary,
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 5,   
+        paddingVertical: 14,
+        paddingHorizontal: 28,
+        borderRadius: 10,   
         alignItems: "center",
     },
     cancelButton: {
         backgroundColor: COLORS.background,
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 5,
+        paddingVertical: 14,
+        paddingHorizontal: 28,
+        borderRadius: 10,
     },
 
     captureButtonText: {
         color: COLORS.white,
         fontSize: 16,
-        fontWeight: "bold",
+        fontWeight: "600",
     },
     cancelButtonText: {
         color: COLORS.textSecondary,
         fontSize: 16,
-        fontWeight: "bold",
+        fontWeight: "700",
     },
     pickerContainer: {
-        borderWidth: 1,
-        borderColor: COLORS.primary,
-        borderRadius: 5,
-        backgroundColor: COLORS.white,
+        borderWidth: 1.5,
+        borderColor: COLORS.border,
+        borderRadius: 10,
+        backgroundColor: COLORS.card,
+        overflow: "hidden",
     
     },
     picker: {   
-        height: 50,
+        height: 52,
         width: "100%",
-        color: '#000000',
+        color: COLORS.textPrimary,
     },
 
 });

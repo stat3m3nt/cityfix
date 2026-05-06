@@ -1,22 +1,19 @@
 /**
- * GeoSnapFieldReporter - Reports Context
- * -------------------------------------------------------------------
- * Persists reports to AsyncStorage so they survive app restarts.
- *
- * Install dependency first:
- *   npx expo install @react-native-async-storage/async-storage
+ * CivicSnap — Report Context
+ * ─────────────────────────────────────────────────────────────────
+ * Manages report state and persists to AsyncStorage across restarts.
+ * Reports now include a human-readable address field from reverse geocoding.
  */
 
-import React,{
+import React, {
   createContext,
   useContext,
   useState,
   useEffect,
-  ReactNode,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────
 
 export type ReportStatus = "Open" | "Resolved";
 
@@ -30,6 +27,7 @@ export type Report = {
   status: ReportStatus;
   latitude: number;
   longitude: number;
+  address: string;       // human-readable from reverse geocoding
   createdAt: Date;
 };
 
@@ -41,16 +39,10 @@ type ReportContextType = {
   deleteReport: (id: string) => Promise<void>;
 };
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Storage helpers ──────────────────────────────────────────────
 
-const STORAGE_KEY = "@geosnap:reports";
+const STORAGE_KEY = "@civicsnap:reports";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-/**
- * AsyncStorage stores strings only.
- * Dates are serialised as ISO strings and must be revived on read.
- */
 function serialise(reports: Report[]): string {
   return JSON.stringify(reports);
 }
@@ -61,7 +53,8 @@ function deserialise(raw: string): Report[] {
   >;
   return parsed.map((r) => ({
     ...r,
-    createdAt: new Date(r.createdAt), // revive Date from ISO string
+    address: r.address ?? "",   // handle old records without address
+    createdAt: new Date(r.createdAt),
   }));
 }
 
@@ -70,7 +63,7 @@ async function loadFromStorage(): Promise<Report[]> {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     return raw ? deserialise(raw) : [];
   } catch (e) {
-    console.error("[ReportContext] Failed to load reports:", e);
+    console.error("[ReportContext] Failed to load:", e);
     return [];
   }
 }
@@ -79,21 +72,18 @@ async function saveToStorage(reports: Report[]): Promise<void> {
   try {
     await AsyncStorage.setItem(STORAGE_KEY, serialise(reports));
   } catch (e) {
-    console.error("[ReportContext] Failed to save reports:", e);
+    console.error("[ReportContext] Failed to save:", e);
   }
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
+// ─── Context ──────────────────────────────────────────────────────
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
-
-// ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function ReportProvider({ children }: { children: React.ReactNode }) {
   const [reports, setReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load persisted reports once on mount
   useEffect(() => {
     loadFromStorage().then((saved) => {
       setReports(saved);
@@ -101,18 +91,12 @@ export function ReportProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  /**
-   * Add a new report and immediately persist the updated list.
-   */
   const addReport = async (report: Report): Promise<void> => {
     const updated = [report, ...reports];
     setReports(updated);
     await saveToStorage(updated);
   };
 
-  /**
-   * Flip the status of one report (Open ↔ Resolved) and persist.
-   */
   const updateReportStatus = async (
     id: string,
     status: ReportStatus
@@ -122,10 +106,6 @@ export function ReportProvider({ children }: { children: React.ReactNode }) {
     await saveToStorage(updated);
   };
 
-  /**
-   * Delete a report by id and persist.
-   * Bonus feature — useful for demos and portfolio walkthroughs.
-   */
   const deleteReport = async (id: string): Promise<void> => {
     const updated = reports.filter((r) => r.id !== id);
     setReports(updated);
@@ -140,8 +120,6 @@ export function ReportProvider({ children }: { children: React.ReactNode }) {
     </ReportContext.Provider>
   );
 }
-
-// ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useReportContext() {
   const context = useContext(ReportContext);

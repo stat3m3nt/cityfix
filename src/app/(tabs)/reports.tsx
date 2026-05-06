@@ -19,11 +19,11 @@ export default function ReportScreen(){
         updateReportStatus(id, newStatus);
     };
 
-    const filteredReports = activeFilter === "All" ? reports : reports.filter(r => r.status === activeFilter);
+    const filteredReports = activeFilter === "All" ? reports : reports.filter((r) => r.status === activeFilter);
 
     return (
         <View style={styles.container}>
-            <ScreenHeader title="Reports"></ScreenHeader>
+            <ScreenHeader title="My Reports" subtitle="Track issues you've submitted to the city"></ScreenHeader>
 
             <View style={styles.filterBar}>
                 {FILTERS.map((filter) => {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primaryFaint,
   },
   filterLabel: {
-        fontSize: 14,
+        fontSize: 13,
         color: COLORS.textSecondary,
         fontWeight: "600",
     },
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     }, 
     listContainer: {
         flex: 1,
-        paddingHorizontal: 20,
-        paddingTop: 16, 
+        paddingHorizontal: 16,
+        paddingTop: 12, 
     }, 
 
 })

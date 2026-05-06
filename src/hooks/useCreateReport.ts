@@ -1,13 +1,10 @@
 /**
- * GeoSnap Field Reporter - useCreateReport Hook
- * ---------------------------------------------------
- * Author: Andrew Evboifo
- * Description:
- * This custom hook, `useCreateReport`, is designed to manage the state and logic for creating a new report in the GeoSnapFieldReporter app. It handles user input, validates the input, and adds the new report to the context. The hook integrates with the current location and camera permissions to ensure that reports are created with accurate location data and optional photos.
- * 
- * The hook provides functions for handling changes to report fields, validating the input, and submitting the report. It also manages the state of the report being created, including its title, category, severity, notes, photo URI, and location.
+ * CivicSnap — useCreateReport hook
+ * ─────────────────────────────────────────────────────────────────
+ * Manages all state and logic for creating a new infrastructure report.
+ * Handles camera permissions, photo capture, GPS location,
+ * reverse geocoding, form validation, and submission.
  */
-
 
 import { useRef, useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
@@ -15,7 +12,7 @@ import { useReportContext } from '../context/ReportContext';
 import { useCurrentLocation } from './useCurrentLocation';
 import { Alert } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { createNewReport, validateReportInput } from '../utils/reportHelpers';
+import { createNewReport, validateReportInput, reverseGeocode } from '../utils/reportHelpers';
 
 export function useCreateReport() {
     const [category, setCategory] = useState('');
@@ -24,6 +21,8 @@ export function useCreateReport() {
     const [photoURI, setPhotoURI] = useState<string | null>(null);
     const [showCamera, setShowCamera] = useState(false);
     const [cameraReady, setCameraReady] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
 
     const cameraRef = useRef<CameraView | null>(null);
     const setCameraRef = useCallback((instance: CameraView | null) => {
@@ -89,26 +88,38 @@ export function useCreateReport() {
             return;
         }
 
-        const location = await getCurrentLocation();
+        setIsSaving(true);
 
-        if (!location) {
-            Alert.alert('Location Error', 'Unable to retrieve current location. Please ensure location services are enabled and try again.');
-            return;
+        try {
+            const location = await getCurrentLocation();
+            if (!location) {
+                Alert.alert('Location Error', 'Unable to retrieve current location. Please ensure location services are enabled and try again.');
+                return;
+            }
+
+            // Reverse geocode coordinates to a human-readable address
+            const address = await reverseGeocode(location.latitude, location.longitude);
+
+            const newReport = createNewReport({
+                category,
+                severity,
+                notes,
+                photoURI,
+                latitude: location.latitude,
+                longitude: location.longitude,
+                address,
+            });
+
+            await addReport(newReport);
+            resetForm();
+            Alert.alert('Success', 'Report saved successfully.');
+            router.replace('/(tabs)/reports');
+        } catch (error) {
+            console.error('Error saving report:', error);
+            Alert.alert('Error', 'Failed to save report. Please try again.');
+        } finally {
+            setIsSaving(false);
         }
-
-        const newReport = createNewReport({
-            category,
-            severity,
-            notes,
-            photoURI,
-            latitude: location.latitude,
-            longitude: location.longitude,
-        });
-
-        addReport(newReport);
-        resetForm();
-        Alert.alert('Success', 'Report saved successfully.');
-        router.replace('/(tabs)/reports');
     };
 
     return {
@@ -129,5 +140,6 @@ export function useCreateReport() {
         takePhoto,
         retakePhoto,
         saveReport,
+        isSaving,
     };
 }
