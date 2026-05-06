@@ -4,7 +4,7 @@ export default{
     slug: "geosnap-field-reporter",
     version: "1.0.0",
     orientation: "portrait",
-    // icon: "./assets/images/icon.png",
+    icon: "./assets/images/geoSnap-icon.png",
     scheme: "geosnapfieldreporter",
     userInterfaceStyle: "automatic",
     ios: {
@@ -36,9 +36,9 @@ export default{
         "expo-splash-screen",
         {
           image: "./assets/images/geoSnap-splash-icon.png",
-          // imageWidth: 200,
+          imageWidth: 200,
           resizeMode: "contain",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#3C3489",
           dark: {
             backgroundColor: "#000000"
           }

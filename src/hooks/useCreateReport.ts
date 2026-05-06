@@ -104,7 +104,7 @@ export function useCreateReport() {
         addReport(newReport);
         resetForm();
         Alert.alert('Success', 'Report saved successfully.');
-        router.replace('/tabs/reports');
+        router.replace('/(tabs)/reports');
     };
 
     return {

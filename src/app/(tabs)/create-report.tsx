@@ -77,6 +77,7 @@ export default function CreateReportScreen() {
                         selectedValue={category}
                         onValueChange={(itemValue) => setCategory(itemValue)}
                         style={styles.picker}
+                        itemStle={{ color: '#000000' }}
                     >
                         <Picker.Item label="Select a category" value="" />
                         {REPORT_CATEGORIES.map((option) => (
@@ -200,10 +201,12 @@ const styles = StyleSheet.create({
         borderColor: COLORS.primary,
         borderRadius: 5,
         backgroundColor: COLORS.white,
+    
     },
     picker: {   
         height: 50,
         width: "100%",
+        color: '#000000',
     },
 
 });
