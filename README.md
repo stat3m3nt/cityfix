@@ -22,6 +22,16 @@ Citizens often have no easy, structured way to report infrastructure issues to t
 | 🗑️ Delete Reports | Remove resolved or accidental reports |
  
 ---
+
+## 📱 Screenshots
+
+| Home | Reports | Map |
+|------|---------|-----|
+| ![Home](assets/images/HomeScreen.png) | ![Reports](assets/images/reportsScreen.png) | ![Map](assets/images/MapScreen.png) |
+
+| Create Report |
+|---------------|
+| ![Create](assets/images/createReportScreen.png) |
  
 ## 🛠️ Tech Stack
  
